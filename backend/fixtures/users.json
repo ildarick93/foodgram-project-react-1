@@ -1,0 +1,68 @@
+[
+    {
+      "model": "users.User",
+      "pk": 1,
+      "fields": {
+        "username": "John",
+        "email": "john@ya.ru",
+        "first_name": "John",
+        "last_name": "Lennon",
+        "password": "pbkdf2_sha256$260000$Kx7l0d4Yu4RAmIX3lkvwoS$9hv8WAGF6RrALhz1K4nzlXMJTyMbxtO+6+3vqr84aWg="
+      }
+    },
+    {
+      "model": "users.User",
+      "pk": 2,
+      "fields": {
+        "username":"Paul",
+        "email": "paul@ya.ru",
+        "first_name": "Paul",
+        "last_name": "McCartney",
+        "password": "pbkdf2_sha256$260000$Kx7l0d4Yu4RAmIX3lkvwoS$9hv8WAGF6RrALhz1K4nzlXMJTyMbxtO+6+3vqr84aWg="
+      }
+    },
+    {
+        "model": "users.User",
+        "pk": 3,
+        "fields": {
+          "username":"Mike",
+          "email": "tyson@ya.ru",
+          "first_name": "Mike",
+          "last_name": "Tyson",
+          "password": "pbkdf2_sha256$260000$Kx7l0d4Yu4RAmIX3lkvwoS$9hv8WAGF6RrALhz1K4nzlXMJTyMbxtO+6+3vqr84aWg="
+        }
+      },
+      {
+        "model": "users.User",
+        "pk": 4,
+        "fields": {
+          "username":"Tom",
+          "email": "tom@ya.ru",
+          "first_name": "Tom",
+          "last_name": "Hanks",
+          "password": "pbkdf2_sha256$260000$Kx7l0d4Yu4RAmIX3lkvwoS$9hv8WAGF6RrALhz1K4nzlXMJTyMbxtO+6+3vqr84aWg="
+        }
+      },
+      {
+        "model": "users.User",
+        "pk": 5,
+        "fields": {
+          "username":"Mikkey",
+          "email": "mikkey@ya.ru",
+          "first_name": "Mikkey",
+          "last_name": "Maus",
+          "password": "pbkdf2_sha256$260000$Kx7l0d4Yu4RAmIX3lkvwoS$9hv8WAGF6RrALhz1K4nzlXMJTyMbxtO+6+3vqr84aWg="
+        }
+      },
+      {
+        "model": "users.User",
+        "pk": 6,
+        "fields": {
+          "username":"Tony",
+          "email": "tony@ya.ru",
+          "first_name": "Tony",
+          "last_name": "Stark",
+          "password": "pbkdf2_sha256$260000$Kx7l0d4Yu4RAmIX3lkvwoS$9hv8WAGF6RrALhz1K4nzlXMJTyMbxtO+6+3vqr84aWg="
+        }
+      }
+  ]
