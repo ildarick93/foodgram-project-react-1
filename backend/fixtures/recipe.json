@@ -1,0 +1,72 @@
+[
+    {
+    "pk": 1,
+    "model": "recipes.Recipe",
+    "fields": {
+      "author": 1,
+      "tags": [1, 2],
+      "ingredients": [1, 2, 3],
+      "name": "пирожки",
+      "image": "",
+      "text": "вкусные пирожкиииии",
+      "cooking_time": 10,
+      "pub_date": "2021-09-25 13:34:16.332479+03:00"
+    }
+    },
+    {
+      "pk": 2,
+      "model": "recipes.Recipe",
+      "fields": {
+        "author": 2,
+        "tags": [3],
+        "ingredients": [4],
+        "name": "варёные огурцы",
+        "image": "",
+        "text": "фигня какая-то",
+        "cooking_time": 5,
+        "pub_date": "2021-09-20 13:34:16.332479+03:00"
+      }
+      },
+      {
+        "pk": 3,
+        "model": "recipes.Recipe",
+        "fields": {
+          "author": 3,
+          "tags": [1],
+          "ingredients": [153, 67],
+          "name": "печеный олень",
+          "image": "",
+          "text": "фигня какая-то",
+          "cooking_time": 17,
+          "pub_date": "2021-09-20 13:34:16.332479+03:00"
+        }
+        },    
+        {
+          "pk": 4,
+          "model": "recipes.Recipe",
+          "fields": {
+            "author": 3,
+            "tags": [2],
+            "ingredients": [128,256],
+            "name": "вареный лось",
+            "image": "",
+            "text": "фигня какая-то",
+            "cooking_time": 10,
+            "pub_date": "2021-09-20 13:34:16.332479+03:00"
+          }
+          },        
+          {
+            "pk": 5,
+            "model": "recipes.Recipe",
+            "fields": {
+              "author": 5,
+              "tags": [2],
+              "ingredients": [128,256],
+              "name": "жареный горох",
+              "image": "",
+              "text": "фигня какая-то",
+              "cooking_time": 10,
+              "pub_date": "2021-09-20 13:34:16.332479+03:00"
+            }
+            }
+]

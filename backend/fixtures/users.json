@@ -3,11 +3,13 @@
       "model": "users.User",
       "pk": 1,
       "fields": {
-        "username": "John",
-        "email": "john@ya.ru",
-        "first_name": "John",
+        "username": "super",
+        "email": "super@ya.ru",
+        "first_name": "super",
         "last_name": "Lennon",
-        "password": "pbkdf2_sha256$260000$Kx7l0d4Yu4RAmIX3lkvwoS$9hv8WAGF6RrALhz1K4nzlXMJTyMbxtO+6+3vqr84aWg="
+        "password": "pbkdf2_sha256$260000$Kx7l0d4Yu4RAmIX3lkvwoS$9hv8WAGF6RrALhz1K4nzlXMJTyMbxtO+6+3vqr84aWg=",
+        "is_staff": true,
+        "is_superuser": true
       }
     },
     {

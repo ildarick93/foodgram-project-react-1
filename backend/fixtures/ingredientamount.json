@@ -1,0 +1,38 @@
+[
+    {
+    "model": "recipes.IngredientAmount",
+    "pk": 1,
+    "fields": {
+      "ingred": 1,
+      "recipe_id": 1,
+      "amount": 10
+    }
+    },
+    {
+    "model": "recipes.IngredientAmount",
+    "pk": 2,
+    "fields": {
+      "ingred": 2,
+      "recipe_id": 1,
+      "amount": 5
+    }
+    },
+    {
+    "model": "recipes.IngredientAmount",
+    "pk": 3,
+    "fields": {
+      "ingred": 3,
+      "recipe_id": 1,
+      "amount": 3
+    }
+    },
+        {
+    "model": "recipes.IngredientAmount",
+    "pk": 4,
+    "fields": {
+      "ingred": 3,
+      "recipe_id": 2,
+      "amount": 3
+    }
+    }
+]

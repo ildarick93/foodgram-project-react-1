@@ -1,6 +1,9 @@
-from django.core.management.base import BaseCommand, CommandError
 import json
 import os
+
+from django.core.management.base import BaseCommand
+
+
 class Command(BaseCommand):
     help = ('Create fixtures from json file,'
             'createfixtures [filename] [app.model]')
@@ -26,6 +29,5 @@ class Command(BaseCommand):
             pk_counter += 1
         with open(f'./fixtures/{filename}.json', 'w') as fixture_file:
             json.dump(fixture, fixture_file, indent=2, ensure_ascii=False)
-        self.stdout.write(self.style.SUCCESS(f'Successfully saved at fixtures/{fixture_file}.json'))
-
-
+        self.stdout.write(self.style.SUCCESS(
+            f'Successfully saved at fixtures/{fixture_file}.json'))

@@ -1,8 +1,11 @@
 from django.contrib.auth import get_user_model
-from rest_framework import serializers
-from djoser.serializers import UserSerializer, UserCreateSerializer
 from djoser.conf import settings
+from djoser.serializers import UserCreateSerializer, UserSerializer
+from recipes.models import Recipe
+from rest_framework import serializers
+
 User = get_user_model()
+
 
 class SubscribeField(serializers.Field):
 
@@ -18,9 +21,10 @@ class CustomUserSerializer(UserSerializer):
 
     class Meta:
         model = User
-        fields = tuple(User.REQUIRED_FIELDS) + (
+        fields = (
             settings.USER_ID_FIELD,
             settings.LOGIN_FIELD,
+            'username',
             'first_name',
             'last_name',
             'is_subscribed',
@@ -39,3 +43,44 @@ class CustomUserCreateSerializer(UserCreateSerializer):
             'last_name',
             "password",
         )
+
+
+class RecipeSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField()
+    name = serializers.CharField()
+    image = serializers.CharField()
+    cooking_time = serializers.IntegerField()
+
+    class Meta:
+        model = Recipe
+        fields = ('id', 'name', 'image', 'cooking_time')
+
+
+class SubscriptionsSerializer(CustomUserSerializer):
+    recipes = RecipeSerializer(many=True)
+    is_subscribed = serializers.SerializerMethodField()
+
+    def to_representation(self, instance):
+        """Convert `username` to lowercase."""
+        ret = super().to_representation(instance)
+        if ret.get('recipes'):
+            ret['count'] = len(ret.get('recipes'))
+        else:
+            ret['count'] = 0
+        return ret
+
+    class Meta:
+        model = User
+        fields = (
+            'id',
+            'first_name',
+            'last_name',
+            "recipes",
+            'is_subscribed',
+        )
+
+    def get_is_subscribed(self, obj):
+        request = self.context.get('request')
+        if not request or request.user.is_anonymous:
+            return False
+        return obj.subscribers.filter(subscriber=request.user).exists()

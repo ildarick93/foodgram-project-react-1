@@ -1,0 +1,18 @@
+[
+    {
+    "model": "users.Follow",
+    "pk": 1,
+    "fields": {
+      "subscriber": 1,
+      "subscribed_to": 3
+    }
+    },
+    {
+      "model": "users.Follow",
+      "pk": 2,
+      "fields": {
+        "subscriber": 1,
+        "subscribed_to": 5
+      }
+      }
+]
