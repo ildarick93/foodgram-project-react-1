@@ -1,6 +1,6 @@
 import io
 
-from api.permissions import IsAuthor, ReadOnly
+from .permissions import IsAuthor, ReadOnly
 from django.db.models import Sum
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
@@ -39,57 +39,59 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
-    @action(detail=True, methods=['GET', 'DELETE'])
+    @action(detail=True, methods=['GET'])
     def shopping_cart(self, request, pk=None):
-        if request.method == 'GET':
-            in_purchases = ShoppingCart.objects.filter(
-                recipe_id=int(pk),
-                user_id=self.request.user
-            )
-            if in_purchases.exists():
-                raise ValidationError('Рецепт уже добавлен в корзину')
-            recipe = Recipe.objects.get(id=int(pk))
-            purchases = ShoppingCart.objects.create(
-                recipe_id=recipe,
-                user_id=self.request.user
-            )
-            purchases.save()
-            serializer = ShoppingCartSerializer(purchases)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        if request.method == 'DELETE':
-            in_purchases = get_object_or_404(
-                ShoppingCart,
-                recipe_id=int(pk),
-                user_id=self.request.user)
-            in_purchases.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+        in_purchases = ShoppingCart.objects.filter(
+            recipe_id=int(pk),
+            user_id=request.user
+        )
+        if in_purchases.exists():
+            raise ValidationError('Рецепт уже добавлен в корзину')
+        recipe = Recipe.objects.get(id=int(pk))
+        purchases = ShoppingCart.objects.create(
+            recipe_id=recipe,
+            user_id=self.request.user
+        )
+        purchases.save()
+        serializer = ShoppingCartSerializer(purchases)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    @action(detail=True, methods=['get', 'delete'])
+    @shopping_cart.mapping.delete
+    def delete_shopping_cart(self, request, pk=None):
+        in_purchases = get_object_or_404(
+            ShoppingCart,
+            recipe_id=int(pk),
+            user_id=self.request.user)
+        in_purchases.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=True, methods=['get'])
     def favorite(self, request, pk=None):
+        user = request.user
+        in_favorites = Favorite.objects.filter(
+            user_id=user.id,
+            recipe_id=pk)
+        if in_favorites:
+            raise ValidationError(
+                detail='Рецепт уже находится в избранном')
+        recipe = get_object_or_404(Recipe, id=int(pk))
+        favorite = Favorite.objects.create(
+            user_id=user,
+            recipe_id=recipe)
+        favorite.save()
+        serializer = FavoriteRecipeSerializer(recipe)
+        return Response(serializer.data)
 
+    @favorite.mapping.delete
+    def delete_favorite(self, request, pk=None):
         user = self.request.user
-        if request.method == 'GET':
-            in_favorites = Favorite.objects.filter(
-                user_id=user.id,
-                recipe_id=pk)
-            if in_favorites:
-                raise ValidationError(
-                    detail='Рецепт уже находится в избранном')
-            recipe = get_object_or_404(Recipe, id=int(pk))
-            favorite = Favorite.objects.create(
-                user_id=user,
-                recipe_id=recipe)
-            favorite.save()
-            serializer = FavoriteRecipeSerializer(recipe)
-            return Response(serializer.data)
-        if request.method == 'DELETE':
-            in_favorites = get_object_or_404(
-                Favorite,
-                user_id=user.id,
-                recipe_id=pk
-            )
-            in_favorites.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+        in_favorites = get_object_or_404(
+            Favorite,
+            user_id=user.id,
+            recipe_id=pk
+        )
+        in_favorites.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, methods=['get'])
     def download_shopping_cart(self, request):
@@ -98,6 +100,18 @@ class RecipeViewSet(viewsets.ModelViewSet):
             'recipe_id__ingredients__name',
             'recipe_id__ingredients__measurement_unit').annotate(
                 Sum('recipe_id__ingredients_amount__amount'))
+        buffer = self.get_pdf_file(queryset)
+        return FileResponse(buffer, as_attachment=True, filename='hello.pdf')
+
+    def get_permissions(self):
+        if self.action in ['shopping_cart', 'favorite',
+                           'download_shopping_cart']:
+            permission_classes = [IsAuthenticated]
+        else:
+            permission_classes = [IsAuthor | ReadOnly]
+        return [permission() for permission in permission_classes]
+
+    def get_pdf_file(self, queryset):
         buffer = io.BytesIO()
         p = canvas.Canvas(buffer, pagesize=A4)
         p.setLineWidth(.3)
@@ -116,15 +130,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         p.showPage()
         p.save()
         buffer.seek(0)
-        return FileResponse(buffer, as_attachment=True, filename='hello.pdf')
-
-    def get_permissions(self):
-        if self.action in ['shopping_cart', 'favorite',
-                           'download_shopping_cart']:
-            permission_classes = [IsAuthenticated]
-        else:
-            permission_classes = [IsAuthor | ReadOnly]
-        return [permission() for permission in permission_classes]
+        return buffer
 
 
 class IngredientsAmountView(generics.ListAPIView):

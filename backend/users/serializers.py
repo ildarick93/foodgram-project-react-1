@@ -63,10 +63,7 @@ class SubscriptionsSerializer(CustomUserSerializer):
     def to_representation(self, instance):
         """Convert `username` to lowercase."""
         ret = super().to_representation(instance)
-        if ret.get('recipes'):
-            ret['count'] = len(ret.get('recipes'))
-        else:
-            ret['count'] = 0
+        ret['count'] = instance.recipes.all().count()
         return ret
 
     class Meta:

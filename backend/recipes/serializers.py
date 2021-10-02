@@ -58,16 +58,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
         recipe = Recipe.objects.create(**validated_data)
         recipe.tags.set(tags)
         recipe.save()
-        ingredients = []
-        for ingredient_data in ingredients_data:
-            ingredient_instance = Ingredient.objects.get(
-                id=ingredient_data['ingred']['id'])
-            ingredient_amount = IngredientAmount.objects.create(
-                recipe_id=recipe,
-                ingred=ingredient_instance,
-                amount=ingredient_data['amount'])
-            ingredient_amount.save()
-            ingredients.append(ingredient_amount)
+        ingredients = self.get_ingredients_list(ingredients_data, recipe)
         recipe.ingredients_amount.set(ingredients)
         recipe.save()
         return recipe
@@ -83,27 +74,26 @@ class RecipeListSerializer(serializers.ModelSerializer):
         recipe.cooking_time = validated_data.get(
             'cooking_time', recipe.cooking_time)
         recipe.save()
-        # if not tags_data:
-        #     tags_list=[]
-        #     for tag in tags:
-        #         tags_list.append(tag['id'])
-        #     recipe.tags.set(tags_list)
         if tags_data:
             recipe.tags.set(tags)
         if ingredients_amount:
-            ingredients = []
-            for ingredient_data in ingredients_data:
-                ingredient_instance = Ingredient.objects.get(
-                    id=ingredient_data['ingred']['id'])
-                ingredient_amount = IngredientAmount.objects.create(
-                    recipe_id=recipe,
-                    ingred=ingredient_instance,
-                    amount=ingredient_data['amount'])
-                ingredient_amount.save()
-                ingredients.append(ingredient_amount)
+            ingredients = self.get_ingredients_list(ingredients_data, recipe)
             recipe.ingredients_amount.set(ingredients)
         recipe.save()
         return recipe
+
+    def get_ingredients_list(self, ingredients_data, recipe):
+        ingredients = []
+        for ingredient_data in ingredients_data:
+            ingredient_instance = Ingredient.objects.get(
+                id=ingredient_data['ingred']['id'])
+            ingredient_amount = IngredientAmount.objects.create(
+                recipe_id=recipe,
+                ingred=ingredient_instance,
+                amount=ingredient_data['amount'])
+            ingredient_amount.save()
+            ingredients.append(ingredient_amount)
+        return ingredients
 
 
 class ShoppingCartSerializer(serializers.ModelSerializer):

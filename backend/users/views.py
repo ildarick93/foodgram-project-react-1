@@ -27,28 +27,31 @@ class DjUserViewSet(UserViewSet):
         serializer = SubscriptionsSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=('GET', 'DELETE'))
+    @action(detail=True, methods=('GET',))
     def subscribe(self, request, id=None):
-        user = self.request.user
+        user = request.user
         author = get_object_or_404(User, id=id)
-        if request.method == 'GET':
-            if user.id == id:
-                raise ValidationError('Нельзя подписаться на себя')
-            if int(id) in user.subscribed_to.all().values_list(
-                    'subscribed_to', flat=True):
-                raise ValidationError('Вы уже подписаны на этого автора')
-            else:
-                follow = Follow.objects.create(
-                    subscriber=user,
-                    subscribed_to=author
-                )
-                follow.save()
-                serializer = SubscriptionsSerializer(author)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        if request.method == 'DELETE':
-            follow = get_object_or_404(
-                Follow,
+        if user.id == id:
+            raise ValidationError('Нельзя подписаться на себя')
+        if int(id) in user.subscribed_to.all().values_list(
+                'subscribed_to', flat=True):
+            raise ValidationError('Вы уже подписаны на этого автора')
+        else:
+            follow = Follow.objects.create(
                 subscriber=user,
-                subscribed_to=author)
-            follow.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+                subscribed_to=author
+            )
+            follow.save()
+            serializer = SubscriptionsSerializer(author)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @subscribe.mapping.delete
+    def delete_subscribe(self, request, id=None):
+        user = request.user
+        author = get_object_or_404(User, id=id)
+        follow = get_object_or_404(
+            Follow,
+            subscriber=user,
+            subscribed_to=author)
+        follow.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
