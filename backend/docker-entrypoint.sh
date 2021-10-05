@@ -1,17 +1,18 @@
 #!/bin/bash
-
-echo "making migrations"
-
 while ! python manage.py migrate; do
-  echo "creating tables in data base"
+echo "making migrations"
 done
 
-while ! python manage.py loadall; do
-  echo "Collect static"
+for file_name in "users" "ingredients" "tags" "recipe" "ingredientamount" "favorite" "follows"; do
+python manage.py loaddata fixtures/$file_name.json
 done
 
 while ! python manage.py collectstatic <<<yes; do
   echo "Collect static"
+done
+
+while ! gunicorn foodgram.wsgi:application --bind 0.0.0.0:8000; do
+  echo "application started"
 done
 
 exec "$@"

@@ -95,6 +95,9 @@ class IngredientAmount(models.Model):
         verbose_name='Количество',
     )
 
+    class Meta:
+        unique_together = ('ingred', 'recipe_id',)
+
 
 class ShoppingCart(models.Model):
     user_id = models.ForeignKey(

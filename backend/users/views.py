@@ -5,7 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
-
+from django.db.models import Count
 from .models import Follow
 from .serializers import SubscriptionsSerializer
 
@@ -19,7 +19,8 @@ class DjUserViewSet(UserViewSet):
         user = self.request.user
         subscribed_to = user.subscribed_to.all().values_list(
             'subscribed_to_id', flat=True)
-        queryset = User.objects.filter(id__in=subscribed_to)
+        queryset = User.objects.filter(id__in=subscribed_to).annotate(
+            count=Count('recipes__id'))
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = SubscriptionsSerializer(page, many=True)
@@ -55,3 +56,14 @@ class DjUserViewSet(UserViewSet):
             subscribed_to=author)
         follow.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.action == 'subscriptions':
+            user = self.request.user
+            subscribed_to = user.subscribed_to.all().values_list(
+                'subscribed_to_id', flat=True)
+            queryset = User.objects.filter(id__in=subscribed_to).annotate(
+                count=Count('recipes__id'))
+            return queryset
+        return queryset

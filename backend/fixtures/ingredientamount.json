@@ -21,12 +21,12 @@
     "model": "recipes.IngredientAmount",
     "pk": 3,
     "fields": {
-      "ingred": 3,
-      "recipe_id": 1,
-      "amount": 3
+      "ingred": 147,
+      "recipe_id": 2,
+      "amount": 12
     }
     },
-        {
+    {
     "model": "recipes.IngredientAmount",
     "pk": 4,
     "fields": {
@@ -34,5 +34,77 @@
       "recipe_id": 2,
       "amount": 3
     }
+    },
+    {
+      "model": "recipes.IngredientAmount",
+      "pk": 5,
+      "fields": {
+        "ingred": 45,
+        "recipe_id": 2,
+        "amount": 95
+      }
+    },
+    {
+      "model": "recipes.IngredientAmount",
+      "pk": 6,
+      "fields": {
+        "ingred": 923,
+        "recipe_id": 3,
+        "amount": 500
+      }
+    },
+    {
+      "model": "recipes.IngredientAmount",
+      "pk": 7,
+      "fields": {
+        "ingred": 920,
+        "recipe_id": 3,
+        "amount": 300
+      }
+    },
+    {
+      "model": "recipes.IngredientAmount",
+      "pk": 8,
+      "fields": {
+        "ingred": 3,
+        "recipe_id": 4,
+        "amount": 3
+      }
+    },
+    {
+      "model": "recipes.IngredientAmount",
+      "pk": 9,
+      "fields": {
+        "ingred": 21,
+        "recipe_id": 4,
+        "amount": 3
+      }
+    },
+    {
+      "model": "recipes.IngredientAmount",
+      "pk": 10,
+      "fields": {
+        "ingred": 3,
+        "recipe_id": 5,
+        "amount": 3
+      }
+    },
+    {
+      "model": "recipes.IngredientAmount",
+      "pk": 11,
+      "fields": {
+        "ingred": 21,
+        "recipe_id": 5,
+        "amount": 3
+      }
+    },
+    {
+      "model": "recipes.IngredientAmount",
+      "pk": 12,
+      "fields": {
+        "ingred": 178,
+        "recipe_id": 5,
+        "amount": 429
+      }
     }
 ]

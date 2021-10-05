@@ -3,21 +3,13 @@ from djoser.conf import settings
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from recipes.models import Recipe
 from rest_framework import serializers
+from drf_extra_fields.fields import Base64ImageField
 
 User = get_user_model()
 
 
-class SubscribeField(serializers.Field):
-
-    def to_representation(self, value):
-        user_id = self.context.get('request').user.id
-        if value.filter(subscriber=user_id):
-            return True
-        return False
-
-
 class CustomUserSerializer(UserSerializer):
-    is_subscribed = SubscribeField(source='subscribed_to')
+    is_subscribed = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -30,6 +22,12 @@ class CustomUserSerializer(UserSerializer):
             'is_subscribed',
         )
         read_only_fields = (settings.LOGIN_FIELD, )
+
+    def get_is_subscribed(self, obj):
+        request = self.context.get('request')
+        if not request or request.user.is_anonymous:
+            return False
+        return obj.subscribers.filter(subscriber=request.user).exists()
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
@@ -48,7 +46,7 @@ class CustomUserCreateSerializer(UserCreateSerializer):
 class RecipeSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField()
     name = serializers.CharField()
-    image = serializers.CharField()
+    image = Base64ImageField()
     cooking_time = serializers.IntegerField()
 
     class Meta:
@@ -56,25 +54,13 @@ class RecipeSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'image', 'cooking_time')
 
 
-class SubscriptionsSerializer(CustomUserSerializer):
+class SubscriptionsSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
     recipes = RecipeSerializer(many=True)
     is_subscribed = serializers.SerializerMethodField()
-
-    def to_representation(self, instance):
-        """Convert `username` to lowercase."""
-        ret = super().to_representation(instance)
-        ret['count'] = instance.recipes.all().count()
-        return ret
-
-    class Meta:
-        model = User
-        fields = (
-            'id',
-            'first_name',
-            'last_name',
-            "recipes",
-            'is_subscribed',
-        )
+    count = serializers.IntegerField(read_only=True)
 
     def get_is_subscribed(self, obj):
         request = self.context.get('request')

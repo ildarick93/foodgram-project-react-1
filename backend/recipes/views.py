@@ -20,7 +20,7 @@ from .models import (Favorite, Ingredient, IngredientAmount, Recipe,
                      ShoppingCart, Tag)
 from .serializers import (IngredientListSerializer, IngredientSerializer,
                           RecipeListSerializer, ShoppingCartSerializer,
-                          TagSerializer)
+                          TagSerializer, RecipeCreateSerializer)
 
 
 class TagViewSet(mixins.ListModelMixin,
@@ -34,7 +34,7 @@ class TagViewSet(mixins.ListModelMixin,
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     filterset_class = RecipeFilterSet
-    serializer_class = RecipeListSerializer
+    # serializer_class = RecipeListSerializer
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -100,7 +100,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             'recipe_id__ingredients__name',
             'recipe_id__ingredients__measurement_unit').annotate(
                 Sum('recipe_id__ingredients_amount__amount'))
-        buffer = self.get_pdf_file(queryset)
+        buffer = get_pdf_file(queryset)
         return FileResponse(buffer, as_attachment=True, filename='hello.pdf')
 
     def get_permissions(self):
@@ -111,26 +111,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
             permission_classes = [IsAuthor | ReadOnly]
         return [permission() for permission in permission_classes]
 
-    def get_pdf_file(self, queryset):
-        buffer = io.BytesIO()
-        p = canvas.Canvas(buffer, pagesize=A4)
-        p.setLineWidth(.3)
-        pdfmetrics.registerFont(TTFont('FreeSans', 'FreeSans.ttf'))
-        p.setFont('FreeSans', 14)
-        t = p.beginText(30, 750, direction=0)
-        t.textLine('Список покупок')
-        p.line(30, 747, 580, 747)
-        t.textLine(' ')
-        for qs in queryset:
-            title = qs['recipe_id__ingredients__name']
-            amount = qs['recipe_id__ingredients_amount__amount__sum']
-            mu = qs['recipe_id__ingredients__measurement_unit']
-            t.textLine(f'{title} ({mu}) - {amount}')
-        p.drawText(t)
-        p.showPage()
-        p.save()
-        buffer.seek(0)
-        return buffer
+    def get_serializer_class(self):
+        if self.action in ['create', 'partial_update']:
+            return RecipeCreateSerializer
+        return RecipeListSerializer
 
 
 class IngredientsAmountView(generics.ListAPIView):
@@ -146,3 +130,25 @@ class IngredientsViewSet(mixins.ListModelMixin,
     filter_backends = [CustomSearchFilter, ]
     search_fields = ['^name']
     pagination_class = None
+
+
+def get_pdf_file(queryset):
+    buffer = io.BytesIO()
+    p = canvas.Canvas(buffer, pagesize=A4)
+    p.setLineWidth(.3)
+    pdfmetrics.registerFont(TTFont('FreeSans', 'FreeSans.ttf'))
+    p.setFont('FreeSans', 14)
+    t = p.beginText(30, 750, direction=0)
+    t.textLine('Список покупок')
+    p.line(30, 747, 580, 747)
+    t.textLine(' ')
+    for qs in queryset:
+        title = qs['recipe_id__ingredients__name']
+        amount = qs['recipe_id__ingredients_amount__amount__sum']
+        mu = qs['recipe_id__ingredients__measurement_unit']
+        t.textLine(f'{title} ({mu}) - {amount}')
+    p.drawText(t)
+    p.showPage()
+    p.save()
+    buffer.seek(0)
+    return buffer
