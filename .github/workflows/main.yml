@@ -1,6 +1,12 @@
 name: Foodgram-app workflow
 
-on: [push]
+on:
+  push:
+    branches:
+      - "**"
+    paths-ignore:
+      - '**/README.md'
+      - '**/docker-compose.yml'
 
 jobs:
   tests:
