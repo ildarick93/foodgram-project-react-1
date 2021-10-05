@@ -1,10 +1,9 @@
 from django.contrib.auth import get_user_model
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
 from users.serializers import CustomUserSerializer
 
-from .models import (Favorite, Ingredient, IngredientAmount, Recipe,
+from .models import (Favorite, IngredientAmount, Recipe,
                      ShoppingCart, Tag)
 
 User = get_user_model()
@@ -132,5 +131,3 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
     name = serializers.ReadOnlyField(source='recipe_id.name')
     image = Base64ImageField(source='recipe_id.image')
     cooking_time = serializers.ReadOnlyField(source='recipe_id.cooking_time')
-
-

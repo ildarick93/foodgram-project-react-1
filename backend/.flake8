@@ -5,7 +5,8 @@ ignore =
 exclude =
     */migrations/,
     venv/,
-    env/
+    env/,
+    */settings.py
 per-file-ignores =
     */settings.py:E501
 max-complexity = 10
