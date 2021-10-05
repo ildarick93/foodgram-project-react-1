@@ -43,7 +43,7 @@ jobs:
             sudo docker-compose stop
             sudo docker-compose rm backend
             sudo docker-compose -f docker-compose.yml up -d
-  
+  #
   send_message:
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
