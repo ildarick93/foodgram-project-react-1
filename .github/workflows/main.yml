@@ -24,7 +24,7 @@ jobs:
         with:
           push: true
           context: backend/
-          tags: lisvv/foodgram:latest
+          tags: lisvv/foodgram-backend:latest
 
   deploy:
     if: github.ref == 'refs/heads/master'
