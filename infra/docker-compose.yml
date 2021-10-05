@@ -10,16 +10,16 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: foodgram
     restart: always
-#
+
   frontend:
-    build: ../frontend/
+    image: lisvv/foodgram-frontend:latest
     volumes:
       - ../frontend/:/app/result_build
     depends_on:
       - db
-#
+
   backend:
-    build: ../backend
+    image: lisvv/foodgram-backend:latest
     restart: always
     depends_on:
       - db
