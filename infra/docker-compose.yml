@@ -17,7 +17,7 @@ services:
       - ../frontend/:/app/result_build
     depends_on:
       - db
-
+#
   backend:
     build: ../backend
     restart: always
