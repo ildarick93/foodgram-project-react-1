@@ -48,7 +48,8 @@ jobs:
             echo DB_PORT=${{ secrets.DB_PORT }} >> .env
             echo DJANGO_SECRET_KEY="${{ secrets.DJANGO_SECRET_KEY }}" >> .env
             cd infra
-            sudo docker-compose down
+            sudo docker pull lisvv/foodgram-backend:latest
+            sudo docker-compose stop
             sudo docker-compose rm 
             docker-compose.yml up -d
   
