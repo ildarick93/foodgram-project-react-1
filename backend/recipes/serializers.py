@@ -118,7 +118,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     def get_ingredients_list(self, ingredients, recipe):
         ingredients_list = []
         for ingredient in ingredients:
-            ingredient_id = ingredient['id']
+            ingredient_id = ingredient['ingred']['id']
             amount = ingredient['amount']
             if IngredientAmount.objects.\
                filter(recipe_id=recipe, ingred_id=ingredient_id).exists():
