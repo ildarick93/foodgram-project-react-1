@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from users.serializers import CustomUserSerializer
+from rest_framework.serializers import ValidationError
 
 from .models import (Favorite, IngredientAmount, Recipe, Ingredient,
                      ShoppingCart, Tag)
@@ -63,11 +64,30 @@ class RecipeListSerializer(serializers.ModelSerializer):
 
 class RecipeCreateSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
-    author = serializers.ReadOnlyField(source='current_user')
+    author = CustomUserSerializer(read_only=True)
     ingredients = IngredientsAmountSerializer(
         source='ingredients_amount', many=True)
     name = serializers.CharField(required=False)
     text = serializers.CharField(required=False)
+
+    class Meta:
+        model = Recipe
+        fields = ('__all__')
+
+    def validate_ingredients(self, data):
+        ingredients = self.initial_data.get('ingredients')
+        if ingredients == []:
+            raise ValidationError('Нужно выбрать как минимум 1 ингридиент!')
+        for ingredient in ingredients:
+            if int(ingredient['amount']) <= 0:
+                raise ValidationError('Количество должно быть положительным!')
+        return data
+
+    def validate_cooking_time(self, data):
+        if data <= 0:
+            raise ValidationError('Время приготовления не может быть'
+                                  ' отрицательным числом или нулем!')
+        return data
 
     def create(self, validated_data):
         ingredients_data = validated_data.pop('ingredients_amount')
@@ -108,8 +128,9 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             amount_exists = IngredientAmount.objects.filter(
                 ingred_id__in=ingredients_id, recipe_id=recipe)
         for ingredient_data in ingredients_data:
-            instance = amount_exists.get(
-                ingred_id=ingredient_data['ingred']['id'])
+            if amount_exists:
+                instance = amount_exists.get(
+                    ingred_id=ingredient_data['ingred']['id'])
             if instance:
                 instance.amount = ingredient_data['amount']
             else:
@@ -121,10 +142,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             instance.save()
             ingredients.append(instance)
         return ingredients
-
-    class Meta:
-        model = Recipe
-        fields = ('__all__')
 
 
 class IngredientSerializer(serializers.ModelSerializer):
