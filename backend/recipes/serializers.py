@@ -96,7 +96,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         ingredients_amount = self.get_ingredients_list(
             ingredients_data, recipe)
         recipe.tags.set(tags)
-        recipe.ingredients.set(ingredients_amount)
+        recipe.ingredients_amount.set(ingredients_amount)
         recipe.save()
         return recipe
 
@@ -142,7 +142,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                     amount=ingredient_data['amount']
                 )
             instance.save()
-            ingredients.append(instance.id)
+            ingredients.append(instance)
         return ingredients
 
 
