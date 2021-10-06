@@ -13,12 +13,16 @@ git clone https://github.com/Viktrols/foodgram-project-react
 
 
 3. Зайдите на свой удалённый сервер и установите docker:
-`<sudo apt install docker.io>`
-
+```
+sudo apt install docker.io
+```
 4. Установите docker-compose:
-`<sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose>`
+```
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+```
 
 5. Создайте папку с проектом, в которой создайте файл .env со следующими переменными:
+
 * DB_ENGINE=django.db.backends.postgresql (движок базы данных)
 * DB_NAME=<Имя базы данных>
 * DB_USER=<пользователь БД>
@@ -29,8 +33,9 @@ git clone https://github.com/Viktrols/foodgram-project-react
 
 6. Скопируйте с локальной машины на сервер директорию infra в папку с проектом.
 7. Перейдите в директорию infra и запустите сборку контейнера:
-`<docker-compose up -d>`
-
+```
+docker-compose up -d
+```
 # Для ревью проект доступен по адресу:
 http://178.154.223.12
 
