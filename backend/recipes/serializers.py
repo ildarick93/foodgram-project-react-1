@@ -152,3 +152,7 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
     name = serializers.ReadOnlyField(source='recipe_id.name')
     image = Base64ImageField(source='recipe_id.image')
     cooking_time = serializers.ReadOnlyField(source='recipe_id.cooking_time')
+
+    class Meta:
+        model = ShoppingCart
+        fields = ('id', 'name', 'image', 'cooking_time')
