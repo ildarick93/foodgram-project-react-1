@@ -91,11 +91,11 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        ingredients_data = validated_data.pop('ingredients_amount')
+        validated_data.pop('ingredients_amount')
         tags = validated_data.pop('tags')
         recipe = super().create(validated_data)
         ingredients_amount = self.get_ingredients_list(
-            ingredients_data, recipe)
+            self.initial_data['ingredients'], recipe)
         recipe.tags.set(tags)
         recipe.ingredients_amount.set(ingredients_amount)
         recipe.save()
