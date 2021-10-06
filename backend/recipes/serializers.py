@@ -124,7 +124,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                filter(recipe_id=recipe, ingred_id=ingredient_id).exists():
                 amount += F('amount')
             ingred = IngredientAmount.objects.update_or_create(
-                recipe_id=recipe, ingredient=ingredient_id,
+                recipe_id=recipe, ingred_id=ingredient_id,
                 defaults={'amount': amount})
             ingredients_list.append(ingred)
         return ingredients_list
