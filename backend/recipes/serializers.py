@@ -122,6 +122,8 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             recipe,
             ingredients_exists=None):
         ingredients = []
+        amount_exists = None
+        instance = None
         if ingredients_exists:
             ingredients_id = [
                 ingredients.ingred_id for ingredients in ingredients_exists]
@@ -140,7 +142,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                     amount=ingredient_data['amount']
                 )
             instance.save()
-            ingredients.append(instance)
+            ingredients.append(instance.id)
         return ingredients
 
 
