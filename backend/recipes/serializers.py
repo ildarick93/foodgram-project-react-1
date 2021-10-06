@@ -111,6 +111,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             ingredients = self.get_ingredients_list(
                 ingredients_data,
                 recipe)
+            recipe.ingredients_amount.clear()
             recipe.ingredients_amount.set(ingredients)
         recipe.save()
         return recipe
