@@ -5,7 +5,7 @@ Foodgram - сервис для публикации рецептов. Автор
 
 1. Склонируйте репозиторий
 
-git clone https://github.com/Viktrols/foodgram-project-react
+git clone https://github.com/lisvv/foodgram-project-react
 
 2. Локально отредактируйте IP-адрес своего удаленного сервера:
 * в переменной ALLOWED_HOSTS в файле settings.py в директории foodgram
