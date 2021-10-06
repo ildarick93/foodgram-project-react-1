@@ -105,14 +105,12 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         ingredients_data = validated_data.pop('ingredients_amount', None)
         tags_data = validated_data.pop('tags', None)
         recipe = super().update(instance, validated_data)
-        ingredients_exists = instance.ingredients_amount.all()
         if tags_data:
             recipe.tags.set(tags_data)
         if ingredients_data:
             ingredients = self.get_ingredients_list(
                 ingredients_data,
-                recipe,
-                ingredients_exists=ingredients_exists)
+                recipe)
             recipe.ingredients_amount.set(ingredients)
         recipe.save()
         return recipe
