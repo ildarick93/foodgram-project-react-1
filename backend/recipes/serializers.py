@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from drf_extra_fields.fields import Base64ImageField
+from django.db.models import F
 from rest_framework import serializers
 from users.serializers import CustomUserSerializer
 from rest_framework.serializers import ValidationError
@@ -116,34 +117,19 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         recipe.save()
         return recipe
 
-    def get_ingredients_list(
-            self,
-            ingredients_data,
-            recipe,
-            ingredients_exists=None):
-        ingredients = []
-        amount_exists = None
-        instance = None
-        if ingredients_exists:
-            ingredients_id = [
-                ingredients.ingred_id for ingredients in ingredients_exists]
-            amount_exists = IngredientAmount.objects.filter(
-                ingred_id__in=ingredients_id, recipe_id=recipe)
-        for ingredient_data in ingredients_data:
-            if amount_exists:
-                instance = amount_exists.get(
-                    ingred_id=ingredient_data['ingred']['id'])
-            if instance:
-                instance.amount = ingredient_data['amount']
-            else:
-                instance = IngredientAmount.objects.create(
-                    ingred_id=ingredient_data['ingred']['id'],
-                    recipe_id=recipe,
-                    amount=ingredient_data['amount']
-                )
-            instance.save()
-            ingredients.append(instance)
-        return ingredients
+    def get_ingredients_list(self, ingredients, recipe):
+        ingredients_list = []
+        for ingredient in ingredients:
+            ingredient_id = ingredient['id']
+            amount = ingredient['amount']
+            if IngredientAmount.objects.\
+               filter(recipe_id=recipe, ingred_id=ingredient_id).exists():
+                amount += F('amount')
+            ingred = IngredientAmount.objects.update_or_create(
+                recipe_id=recipe, ingredient=ingredient_id,
+                defaults={'amount': amount})
+            ingredients_list.append(ingred)
+        return ingredients_list
 
 
 class IngredientSerializer(serializers.ModelSerializer):
