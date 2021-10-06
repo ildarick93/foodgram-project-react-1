@@ -102,25 +102,29 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, instance, validated_data):
-        validated_data.pop('ingredients_amount', None)
+        ingredients_data = validated_data.pop('ingredients_amount', None)
         tags_data = validated_data.pop('tags', None)
         recipe = super().update(instance, validated_data)
         if tags_data:
             recipe.tags.set(tags_data)
-        ingredients_data = self.initial_data.pop('ingredients_amount')
         if ingredients_data:
+            ingred = self.initial_data['ingredients']
             ingredients = self.get_ingredients_list(
-                ingredients_data,
+                ingred,
                 recipe)
-            recipe.ingredients_amount.set([])
             recipe.ingredients_amount.set(ingredients)
         recipe.save()
         return recipe
 
     def get_ingredients_list(self, ingredients, recipe):
         ingredients_list = []
+        ingredients_to_delete = IngredientAmount.objects.filter(
+            recipe_id=recipe)
+        if ingredients_to_delete:
+            for ingredient in ingredients_to_delete:
+                ingredient.delete()
         for ingredient in ingredients:
-            ingredient_id = ingredient['ingred']['id']
+            ingredient_id = ingredient['id']
             amount = ingredient['amount']
             ingred_instance = Ingredient.objects.get(id=ingredient_id)
             if IngredientAmount.objects.\
