@@ -39,8 +39,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
     ingredients = IngredientListSerializer(
         source='ingredients_amount', many=True)
     author = CustomUserSerializer(read_only=True)
-    tags = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=Tag.objects.all(), required=False)
+    tags = TagSerializer(many=True)
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
 
