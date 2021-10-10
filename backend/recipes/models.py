@@ -133,3 +133,6 @@ class Favorite(models.Model):
         null=True,
         blank=True
     )
+
+    class Meta:
+        unique_together = ('user_id', 'recipe_id',)
