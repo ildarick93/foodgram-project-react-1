@@ -25,10 +25,14 @@ class RecipeFilterSet(FilterSet):
         fields = ['author', 'tags', 'is_favorited', 'is_in_shopping_cart']
 
     def filter_is_favorite(self, queryset, name, value):
-        return queryset.objects.filter(favorites__user_id=self.request.user)
+        if value:
+            return queryset.objects.filter(favorites__user_id=self.request.user)
+        return queryset.objects.all()
 
     def filter_is_in_shopping_cart(self, queryset, name, value):
-        return queryset.objects.filter(purchases__user_id=self.request.user)
+        if value:
+            return queryset.objects.filter(purchases__user_id=self.request.user)
+        return queryset.objects.all()
 
 
 class CustomSearchFilter(SearchFilter):
