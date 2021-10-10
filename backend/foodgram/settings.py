@@ -9,9 +9,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ["178.154.223.12"]
+ALLOWED_HOSTS = ["178.154.223.12", "backend"]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
