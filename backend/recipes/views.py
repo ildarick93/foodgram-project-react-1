@@ -34,7 +34,7 @@ class TagViewSet(mixins.ListModelMixin,
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     filterset_class = RecipeFilterSet
-    # serializer_class = RecipeListSerializer
+    filterset_fields = ['is_favorited', 'is_in_shopping_cart']
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
