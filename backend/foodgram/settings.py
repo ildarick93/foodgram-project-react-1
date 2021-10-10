@@ -11,6 +11,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 DEBUG = True
 
+#ALLOWED_HOSTS = ["*"]
 ALLOWED_HOSTS = ["178.154.223.12", "backend"]
 
 INSTALLED_APPS = [
