@@ -14,6 +14,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from users.serializers import RecipeSerializer as FavoriteRecipeSerializer
+from django_filters import rest_framework as filters
 
 from .filters import CustomSearchFilter, RecipeFilterSet
 from .models import (Favorite, Ingredient, IngredientAmount, Recipe,
@@ -33,8 +34,8 @@ class TagViewSet(mixins.ListModelMixin,
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
+    filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = RecipeFilterSet
-    filterset_fields = ['is_favorited', 'is_in_shopping_cart']
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
