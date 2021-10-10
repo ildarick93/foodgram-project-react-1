@@ -19,16 +19,16 @@ class RecipeFilterSet(FilterSet):
     is_in_shopping_cart = filters.BooleanFilter(
         label="Is in shopping cart",
         method='filter_is_in_shopping_cart')
-#
+
     class Meta:
         model = Recipe
         fields = ['author', 'tags', 'is_favorited', 'is_in_shopping_cart']
 
     def filter_is_favorite(self, queryset, name, value):
-        return Recipe.objects.filter(favorites__user_id=self.request.user)
+        return queryset.objects.filter(favorites__user_id=self.request.user)
 
     def filter_is_in_shopping_cart(self, queryset, name, value):
-        return Recipe.objects.filter(purchases__user_id=self.request.user)
+        return queryset.objects.filter(purchases__user_id=self.request.user)
 
 
 class CustomSearchFilter(SearchFilter):
