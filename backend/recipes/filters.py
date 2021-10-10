@@ -19,7 +19,7 @@ class RecipeFilterSet(FilterSet):
     is_in_shopping_cart = filters.BooleanFilter(
         label="Is in shopping cart",
         method='filter_is_in_shopping_cart')
-
+#
     class Meta:
         model = Recipe
         fields = ['author', 'tags', 'is_favorited', 'is_in_shopping_cart']
